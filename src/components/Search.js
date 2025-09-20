@@ -27,6 +27,8 @@ const Search = () => {
   const [cities, setcities] = useState([]);
   const [selectedcity,  setSelectedcity] = useState("");
   const [medical_centre, setmedical_centre] = useState([])
+  const [searchClicked, setSearchClicked] = useState(false);
+
 
 
   useEffect(() => {
@@ -60,8 +62,7 @@ const Search = () => {
     fetch_cities();
   },[selectedState]);
 
-      useEffect(() => {
-    if (!selectedState || !selectedcity) return;
+   
     const fetch_centre = async() => {
     try{
         //const response = await fetch( `https://meddata-backend.onrender.com/data?state=${selectedState}&city=${selectedcity}`)
@@ -76,8 +77,7 @@ const Search = () => {
         return ;
     }
 };
-    fetch_centre();
-  },[selectedState, selectedcity]);
+    
 
 
 
@@ -87,7 +87,7 @@ const Search = () => {
 
     <div style={{ display: "flex", gap: "20px", marginLeft: "100px" }}>
 
-       <div style={boxStyle}>
+       <div id = "state" style={boxStyle}>
             <FaSearch style={{ color: "#6c757d" }} />
             <input 
             type="text" 
@@ -100,45 +100,70 @@ const Search = () => {
 
             }}
                
-            list="state"
+            list="state-list"
             style={inputStyle}
             />
 
-            <datalist id="state">
+            <datalist id="state-list">
                 {states.map((state_ip) => (
                 <option  value={state_ip} />
                 ))}
             </datalist>
         </div>
 
-        <div style={boxStyle}>
+        <div id = "city" style={boxStyle}>
             <FaSearch style={{ color: "#6c757d" }} />
             <input 
             type="text" 
             placeholder="City" 
             value = {selectedcity}
-            list="city"
+            list="city-list"
             onChange={(e) => setSelectedcity(e.target.value)}
             disabled ={!selectedState}
             style={inputStyle} />
             
-                <datalist id="city">
+                <datalist id="city-list">
                 {cities.map((city_ip) => (
                 <option key={city_ip}  value={city_ip} />
                 ))}
             </datalist>
+          </div>
+
+          <button
+          id="searchBtn"
+          onClick={() => {
+    fetch_centre();
+    setSearchClicked(true);   
+  }}
+          disabled = {!selectedState || !selectedcity}
+          style={{
+            padding: "5px 15px",
+            borderRadius: "4px",
+            border: "none",
+            backgroundColor: "#007bff",
+            color: "#fff",
+            cursor: "pointer",
+          }}
+        >
+          Search
+        </button>
 
 
-        </div>
 
        </div>
 
+       {/*  HEADING FRO MEDICAL CENTRES  */}
+
        <div style={{ marginLeft: "100px", marginTop: "20px" }}>
 
-        {selectedcity && (
-            <h1>{medical_centre.length} medical centres available in {selectedcity}</h1>
+        {searchClicked && selectedcity && (
+            <h1 style={{marginBottom: "20px"}}>
+               {medical_centre.length} medical {medical_centre.length === 1 ? "center" : "centers"} available in {selectedcity}
+              </h1>
         )}
 
+{/* 
+  {searchClicked ? (
   {medical_centre.length > 0 ? (
 
     medical_centre.map((center, index) => (
@@ -147,6 +172,20 @@ const Search = () => {
         <p>{center.Address}</p>
         <p>{center.City}</p>
         <p>{center["Phone Number"]}</p>
+
+          <button
+                style={{
+                  padding: "5px 10px",
+                  borderRadius: "4px",
+                  border: "none",
+                  backgroundColor: "#007bff",
+                  color: "#fff",
+                  cursor: "pointer",
+                }}
+              >
+                Book FREE Center Visit
+              </button>
+
       </div>
     ))
   ) : selectedcity ? (
@@ -154,6 +193,39 @@ const Search = () => {
         ) : (
           <p>Please select state and city to view medical centres.</p>
         )}
+
+      )} */}
+
+      {searchClicked ? (
+  medical_centre.length > 0 ? (
+    medical_centre.map((center, index) => (
+      <div key={index} style={{ marginBottom: "10px", padding: "10px", border: "1px solid #ccc", borderRadius: "4px" }}>
+        <h3>{center["Hospital Name"]}</h3>
+        <p>{center.Address}</p>
+        <p>{center.City}</p>
+        <p>{center["Phone Number"]}</p>
+
+        <button
+          style={{
+            padding: "5px 10px",
+            borderRadius: "4px",
+            border: "none",
+            backgroundColor: "#007bff",
+            color: "#fff",
+            cursor: "pointer",
+          }}
+        >
+          Book FREE Center Visit
+        </button>
+      </div>
+    ))
+  ) : (
+    <p>No medical centres found for {selectedcity}, {selectedState}.</p>
+  )
+) : (
+  <p>Please select state and city to view medical centres.</p>
+)}
+
 
 
 
