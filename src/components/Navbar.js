@@ -37,7 +37,7 @@ const Navbar = () => {
         }}
       >
         <li style={{ cursor: "pointer", color: "#001d3d" }}>Find Doctors</li>
-        <li onClick = {() => navigate("/")} style={{ cursor: "pointer", color: "#001d3d" }}>Hospitals</li>
+        <li onClick = {() => navigate("/my-bookings")} style={{ cursor: "pointer", color: "#001d3d" }}>Hospitals</li>
         <li style={{ cursor: "pointer", color: "#001d3d" }}>Medicines</li>
         <li style={{ cursor: "pointer", color: "#001d3d" }}>Surgeries</li>
         <li style={{ cursor: "pointer", color: "#001d3d" }}>
