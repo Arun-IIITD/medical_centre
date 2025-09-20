@@ -1,5 +1,6 @@
 import {React, useEffect, useState} from "react";
 import { FaSearch } from "react-icons/fa";
+import Booking from "./Booking"
 
 const Search = () => {
   const boxStyle = {
@@ -24,10 +25,13 @@ const Search = () => {
 
   const [states, setStates] = useState([])
   const [selectedState, setSelectedState] = useState("");
-  const [cities, setcities] = useState([]);
-  const [selectedcity,  setSelectedcity] = useState("");
-  const [medical_centre, setmedical_centre] = useState([])
+  const [cities, setCities] = useState([]);
+  const [selectedCity,  setSelectedCity] = useState("");
+  const [medical_centre, setMedical_centre] = useState([])
   const [searchClicked, setSearchClicked] = useState(false);
+  const [showBooking, setShowBooking] = useState(false);
+  const [activeHospital, setActiveHospital] = useState(null);
+
 
 
 
@@ -52,7 +56,7 @@ const Search = () => {
     try{
         const response = await fetch(`https://meddata-backend.onrender.com/cities/${selectedState}`)
         const data = await response.json()
-        setcities(data)
+        setCities(data)
 
     }catch(error){
         console.log("error in fetching cities" + error);
@@ -63,18 +67,18 @@ const Search = () => {
   },[selectedState]);
 
    
-    const fetch_centre = async() => {
+    const getHospitals = async() => {
     try{
-        //const response = await fetch( `https://meddata-backend.onrender.com/data?state=${selectedState}&city=${selectedcity}`)
+        //const response = await fetch( `https://meddata-backend.onrender.com/data?state=${selectedState}&city=${selectedCity}`)
           const response = await fetch(
-          `https://meddata-backend.onrender.com/data?state=${selectedState}&city=${selectedcity}`
+          `https://meddata-backend.onrender.com/data?state=${selectedState}&city=${selectedCity}`
         );
         const data = await response.json()
-        setmedical_centre(data);
+        setMedical_centre(data);
          setSearchClicked(true);
     }catch(error){
         console.log("error in fetching centres" + error);
-        setmedical_centre([]);
+        setMedical_centre([]);
     setSearchClicked(false);
     }
 };
@@ -96,8 +100,8 @@ const Search = () => {
             value = {selectedState}
             onChange={(e) => {
                  setSelectedState(e.target.value);
-                 setSelectedcity('');
-                 setmedical_centre([]);
+                 setSelectedCity('');
+                 setMedical_centre([]);
                  setSearchClicked(false);
             }}
                
@@ -117,11 +121,11 @@ const Search = () => {
             <input 
             type="text" 
             placeholder="City" 
-            value = {selectedcity}
+            value = {selectedCity}
             list="city-list"
             onChange={(e) => {
-                setSelectedcity(e.target.value);
-                setmedical_centre([]);
+                setSelectedCity(e.target.value);
+                setMedical_centre([]);
                 setSearchClicked(false); 
               }}
             disabled ={!selectedState}
@@ -135,12 +139,12 @@ const Search = () => {
           </div>
 
           <button
-          id="searchBtn"
+          id="#searchBtn"
           onClick={() => {
-    fetch_centre();
-    setSearchClicked(true);   
-  }}
-          disabled = {!selectedState || !selectedcity}
+            getHospitals();
+            setSearchClicked(true);   
+          }}
+          disabled = {!selectedState || !selectedCity}
           style={{
             padding: "5px 15px",
             borderRadius: "4px",
@@ -161,9 +165,10 @@ const Search = () => {
 
        <div style={{ marginLeft: "100px", marginTop: "20px" }}>
 
-        {searchClicked && selectedcity && (
+        {searchClicked && selectedCity && (
             <h1 style={{marginBottom: "20px"}}>
-               {medical_centre.length} medical {medical_centre.length === 1 ? "center" : "centers"} available in {selectedcity}
+              {/* '2 medical centers available in dothan */}
+               {medical_centre.length} medical {medical_centre.length === 1 ? "center" : "centers"} available in {selectedCity}
               </h1>
         )}
 
@@ -193,8 +198,8 @@ const Search = () => {
 
       </div>
     ))
-  ) : selectedcity ? (
-          <p>No medical centres found for {selectedcity}, {selectedState}.</p>
+  ) : selectedCity ? (
+          <p>No medical centres found for {selectedCity}, {selectedState}.</p>
         ) : (
           <p>Please select state and city to view medical centres.</p>
         )}
@@ -218,14 +223,25 @@ const Search = () => {
             backgroundColor: "#007bff",
             color: "#fff",
             cursor: "pointer",
+            // onChange: {Booking}
           }}
+          //onClick={setShowBooking(true)}
+          onClick={() => setActiveHospital(center)}
+
         >
           Book FREE Center Visit
         </button>
+
+         {activeHospital &&
+            activeHospital["Hospital Name"] === center["Hospital Name"] && (
+      <Booking hospital={center} />
+  )}
+
+
       </div>
     ))
   ) : (
-    <p>No medical centres found for {selectedcity}, {selectedState}.</p>
+    <p>No medical centres found for {selectedCity}, {selectedState}.</p>
   )
 ) : (
   <p>Please select state and city to view medical centres.</p>
@@ -235,16 +251,7 @@ const Search = () => {
 
 
 </div>
-
-
-
- 
-
-
-
-    </>
-    
-
+</>
   );
 };
 
