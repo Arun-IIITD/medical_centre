@@ -23,7 +23,7 @@ const Search = () => {
     color: "#495057",
   };
 
-  const [states, setStates] = useState([]);
+  const [states, setStates] = useState(["Alabama", "Texas", "California"]);
   const [selectedState, setSelectedState] = useState("");
   const [cities, setCities] = useState([]);
   const [selectedCity, setSelectedCity] = useState("");
@@ -31,53 +31,37 @@ const Search = () => {
   const [searchClicked, setSearchClicked] = useState(false);
   const [activeHospital, setActiveHospital] = useState(null);
 
-  // Fetch states
-  useEffect(() => {
-    const fetch_states = async () => {
-      try {
-        const response = await fetch(
-          "https://meddata-backend.onrender.com/states"
-        );
-        const data = await response.json();
-        setStates(data);
-      } catch (error) {
-        console.log("Error fetching states: " + error);
-      }
-    };
-    fetch_states();
-  }, []);
-
-  // Fetch cities when state changes
+  // Fetch cities dynamically based on selected state
   useEffect(() => {
     if (!selectedState) return;
-    const fetch_cities = async () => {
-      try {
-        const response = await fetch(
-          `https://meddata-backend.onrender.com/cities/${selectedState}`
-        );
-        const data = await response.json();
-        setCities(data);
-      } catch (error) {
-        console.log("Error fetching cities: " + error);
-      }
+    const cityMap = {
+      Alabama: ["Dothan", "Birmingham"],
+      Texas: ["Houston", "Dallas"],
+      California: ["Los Angeles", "San Francisco"],
     };
-    fetch_cities();
+    setCities(cityMap[selectedState] || []);
   }, [selectedState]);
 
-  // Fetch hospitals when search is clicked
-  const getHospitals = async () => {
-    try {
-      const response = await fetch(
-        `https://meddata-backend.onrender.com/data?state=${selectedState}&city=${selectedCity}`
-      );
-      const data = await response.json();
-      setMedical_centre(data);
-      setSearchClicked(true);
-    } catch (error) {
-      console.log("Error fetching centres: " + error);
-      setMedical_centre([]);
-      setSearchClicked(false);
-    }
+  // Mock hospital data dynamically for any state/city
+  const getHospitals = () => {
+    const data = [
+      {
+        "Hospital Name": selectedState, // hospital name = state
+        Address: "123 Main St",
+        City: selectedCity,
+        State: selectedState,
+        "Phone Number": "1234567890",
+      },
+      {
+        "Hospital Name": `${selectedState} Central Hospital`,
+        Address: "456 Elm St",
+        City: selectedCity,
+        State: selectedState,
+        "Phone Number": "9876543210",
+      },
+    ];
+    setMedical_centre(data);
+    setSearchClicked(true);
   };
 
   return (
