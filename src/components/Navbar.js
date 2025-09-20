@@ -1,9 +1,13 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import logo from "../assests/logo.png"
 import header from "../assests/header.png"
 import tag_hero from "../assests/tag_hero.png"
 
+
 const Navbar = () => {
+
+  const navigate = useNavigate(); 
   return (
     <div>
      <img src = {header} alt = "not found" style= {{width: "100vw", height: "30px"}}></img>
@@ -33,7 +37,7 @@ const Navbar = () => {
         }}
       >
         <li style={{ cursor: "pointer", color: "#001d3d" }}>Find Doctors</li>
-        <li style={{ cursor: "pointer", color: "#001d3d" }}>Hospitals</li>
+        <li onClick = {() => navigate("/")} style={{ cursor: "pointer", color: "#001d3d" }}>Hospitals</li>
         <li style={{ cursor: "pointer", color: "#001d3d" }}>Medicines</li>
         <li style={{ cursor: "pointer", color: "#001d3d" }}>Surgeries</li>
         <li style={{ cursor: "pointer", color: "#001d3d" }}>
@@ -41,6 +45,10 @@ const Navbar = () => {
         </li>
         <li style={{ cursor: "pointer", color: "#001d3d" }}>Facilities</li>
       </ul>
+
+       {/* <Link to="/my-bookings" style={{ color: "#fff", textDecoration: "none" }}>
+        My Bookings
+      </Link> */}
 
       <button
         style={{
@@ -52,6 +60,7 @@ const Navbar = () => {
           cursor: "pointer",
           fontWeight: "bold",
         }}
+          onClick={() => navigate("/my-bookings")}
       >
         My Bookings
       </button>
