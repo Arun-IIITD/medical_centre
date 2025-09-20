@@ -70,11 +70,12 @@ const Search = () => {
           `https://meddata-backend.onrender.com/data?state=${selectedState}&city=${selectedcity}`
         );
         const data = await response.json()
-        setmedical_centre(data)
-
+        setmedical_centre(data);
+         setSearchClicked(true);
     }catch(error){
         console.log("error in fetching centres" + error);
-        return ;
+        setmedical_centre([]);
+    setSearchClicked(false);
     }
 };
     
@@ -97,7 +98,7 @@ const Search = () => {
                  setSelectedState(e.target.value);
                  setSelectedcity('');
                  setmedical_centre([]);
-
+                 setSearchClicked(false);
             }}
                
             list="state-list"
@@ -118,7 +119,11 @@ const Search = () => {
             placeholder="City" 
             value = {selectedcity}
             list="city-list"
-            onChange={(e) => setSelectedcity(e.target.value)}
+            onChange={(e) => {
+                setSelectedcity(e.target.value);
+                setmedical_centre([]);
+                setSearchClicked(false); 
+              }}
             disabled ={!selectedState}
             style={inputStyle} />
             
